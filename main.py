@@ -2,19 +2,21 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
+import os
+import uvicorn
 
 app = FastAPI()
-
+    
 # Load model and scaler
 model = joblib.load("diabetes_model.pkl")
 scaler = joblib.load("scaler.pkl")
-
+    
 class InputData(BaseModel):
     Pregnancies: int
     Glucose: float
     BloodPressure: float
     SkinThickness: float
-    Insulin: float
+    Insulin: float 
     BMI: float
     DiabetesPedigreeFunction: float
     Age: int
@@ -22,7 +24,7 @@ class InputData(BaseModel):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
+    
 @app.post("/predict")
 async def predict(data: InputData):
     arr = np.array([[data.Pregnancies, data.Glucose, data.BloodPressure,
@@ -36,4 +38,8 @@ async def predict(data: InputData):
         "result": "Diabetic" if pred == 1 else "Not Diabetic",
         "confidence": round(float(prob), 2)
     }
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Use Render's PORT or default 8000 locally
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
 
