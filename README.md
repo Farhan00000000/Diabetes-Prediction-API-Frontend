@@ -79,7 +79,7 @@ This repository contains the **Backend API** for predicting diabetes using a tra
    ```bash
    http://127.0.0.1:8000/docs
    ```
-
+- *Note: Docker must be installed and running.*
  ---
 
 # API Endpoints
